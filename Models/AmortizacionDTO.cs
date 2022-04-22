@@ -1,8 +1,8 @@
 ﻿namespace TestApi.Models
 {
-    public class Amortizacion
+    public class AmortizacionDTO
     {
-        public Amortizacion(int NumeroDeCuota, decimal MontoCapital, decimal MontoInteres, decimal SaldoInsolutoCredito)
+        public AmortizacionDTO(int NumeroDeCuota, decimal MontoCapital, decimal MontoInteres, decimal SaldoInsolutoCredito)
         {
             this.NumeroDeCuota = NumeroDeCuota;
             this.MontoCapital = MontoCapital;

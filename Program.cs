@@ -1,3 +1,4 @@
+
 using TestApi.IServices;
 using TestApi.Models.DB;
 using TestApi.Services;
@@ -6,7 +7,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddSingleton<testApiContext>();
 builder.Services.AddSingleton<ICreditoService, CreditoService>();

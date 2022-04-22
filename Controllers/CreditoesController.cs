@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using TestApi.IServices;
 using TestApi.Models.DB;
+using TestApi.Models;
+using System.Net;
 
 namespace TestApi.Controllers
 {
@@ -15,10 +18,12 @@ namespace TestApi.Controllers
     public class CreditoesController : ControllerBase
     {
         private readonly testApiContext _context;
+        private readonly ICreditoService _icreditoService;
 
-        public CreditoesController(testApiContext context)
+        public CreditoesController(testApiContext context, ICreditoService icreditoService)
         {
             _context = context;
+            _icreditoService = icreditoService;
         }
 
         // GET: api/Creditoes
@@ -42,67 +47,42 @@ namespace TestApi.Controllers
             return credito;
         }
 
-        // PUT: api/Creditoes/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutCredito(int id, Credito credito)
-        {
-            if (id != credito.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(credito).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CreditoExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
+         
         // POST: api/Creditoes
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Credito>> PostCredito(Credito credito)
+        public async Task<IActionResult> PostCredito(Credito credito)
         {
-            _context.Creditos.Add(credito);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetCredito", new { id = credito.Id }, credito);
-        }
-
-        // DELETE: api/Creditoes/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCredito(int id)
-        {
-            var credito = await _context.Creditos.FindAsync(id);
-            if (credito == null)
+            if (ModelState.IsValid)
             {
-                return NotFound();
+                List<AmortizacionDTO> amotizacionListDTO = _icreditoService.amortizacion(credito.MontoPrestamo, credito.Tasa, credito.Plazo);
+                List<Amortizacion> amotizacionList = new List<Amortizacion>();
+                foreach (AmortizacionDTO amortizacion in amotizacionListDTO)
+                {
+                    amotizacionList.Add(new Amortizacion
+                    {
+                        NumeroDeCuota = amortizacion.NumeroDeCuota,
+                        MontoCapital = amortizacion.MontoCapital,
+                        MontoInteres = amortizacion.MontoInteres,
+                        SaldoInsolutoCredito = amortizacion.SaldoInsolutoCredito,
+                    });
+                }
+                credito.Amortizacions = amotizacionList;
+                await _context.Creditos.AddAsync(credito);
+                await _context.SaveChangesAsync();
+
+                return Ok(amotizacionListDTO);
+            }
+            else
+            {
+                //return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
+                return UnprocessableEntity( ModelState);
+                //BadRequest
             }
 
-            _context.Creditos.Remove(credito);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
+            
         }
 
-        private bool CreditoExists(int id)
-        {
-            return _context.Creditos.Any(e => e.Id == id);
-        }
+      
     }
 }

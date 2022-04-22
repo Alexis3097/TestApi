@@ -1,6 +1,6 @@
 ﻿namespace TestApi.Models
 {
-    public class Credito
+    public class CreditoDTO
     {
         public int Id { get; set; }
         public decimal MontoPrestamo { get; set; }

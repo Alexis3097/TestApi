@@ -5,25 +5,14 @@ namespace TestApi.Services
 {
     public class CreditoService : ICreditoService
     {
-        public decimal calcularMontoCapital(decimal montoCredito, int plazo)
-        {
+     
 
-            try
-            {
-                return montoCredito / plazo;
-            }
-            catch (Exception)
-            {
-                return 0;
-            }
-
-        }
-
-        public List<Amortizacion> amortizacion(decimal montoDeCredito, decimal tasa, decimal montoDeCapital, int plazo)
+        public List<AmortizacionDTO> amortizacion(decimal montoDeCredito, decimal tasa, int plazo)
         {
             try
             {
-                List<Amortizacion> amortization = new List<Amortizacion>();
+                decimal montoDeCapital = montoDeCredito / plazo;
+                List<AmortizacionDTO> amortization = new List<AmortizacionDTO>();
                 for (int i = 0; i < plazo; i++)
                 {
                     int numeroDeCuota = i + 1;
@@ -31,7 +20,7 @@ namespace TestApi.Services
                     decimal tasaCalculada = (tasa / 100) / 360;
                     decimal montoDeInteres = saldoInsolutoPendiente * tasaCalculada * 30;
                     decimal saldoInsolutoActual = saldoInsolutoPendiente - montoDeCapital;
-                    amortization.Add(new Amortizacion(numeroDeCuota, montoDeCapital, montoDeInteres, saldoInsolutoActual));
+                    amortization.Add(new AmortizacionDTO(numeroDeCuota, montoDeCapital, montoDeInteres, saldoInsolutoActual));
 
                 }
 
