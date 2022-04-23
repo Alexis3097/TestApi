@@ -15,7 +15,7 @@
       "launchUrl": "swagger",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DBString": "Server=LAPTOP-3OVQI36F; Database=testApi; Trusted_Connection=true;"
+        "DBString": "Server=DESKTOP-2KQVE8N; Database=testApi; Trusted_Connection=true;"
       },
       "applicationUrl": "http://localhost:5213",
       "dotnetRunMessages": true

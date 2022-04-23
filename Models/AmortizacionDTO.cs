@@ -9,7 +9,6 @@
             this.MontoInteres = MontoInteres;
             this.SaldoInsolutoCredito = SaldoInsolutoCredito;
         }
-        public int FkCreditoId { get; set; }
         public int NumeroDeCuota { get; set; }
         public decimal MontoCapital { get; set; }
         public decimal MontoInteres { get; set; }

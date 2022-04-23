@@ -20,7 +20,7 @@ namespace TestApi.Services
                     decimal tasaCalculada = (tasa / 100) / 360;
                     decimal montoDeInteres = saldoInsolutoPendiente * tasaCalculada * 30;
                     decimal saldoInsolutoActual = saldoInsolutoPendiente - montoDeCapital;
-                    amortization.Add(new AmortizacionDTO(numeroDeCuota, montoDeCapital, montoDeInteres, saldoInsolutoActual));
+                    amortization.Add(new AmortizacionDTO(numeroDeCuota, Math.Round(montoDeCapital, MidpointRounding.AwayFromZero), Math.Round(montoDeInteres, MidpointRounding.AwayFromZero), Math.Round(saldoInsolutoActual, MidpointRounding.AwayFromZero)));
 
                 }
 

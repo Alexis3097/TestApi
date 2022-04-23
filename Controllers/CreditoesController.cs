@@ -47,14 +47,66 @@ namespace TestApi.Controllers
             return credito;
         }
 
-         
-        // POST: api/Creditoes
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+
+
+        //POST: api/Creditoes
+        //To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<IActionResult> PostCredito(Credito credito)
+        public async Task<IActionResult> PostCredito(CreditoDTO creditoDTO)
         {
-            if (ModelState.IsValid)
+
+            try
             {
+
+                //validacion de campos
+                if (creditoDTO.MontoPrestamo == null)
+                {
+                    ModelState.AddModelError("MontoPrestamo", "El campo es requerido");
+                }
+                else if (creditoDTO.MontoPrestamo.GetType() != typeof(decimal))
+                {
+                    ModelState.AddModelError("MontoPrestamo", "El campo debe ser numerico");
+
+                }
+
+                if (creditoDTO.Tasa == null)
+                {
+                    ModelState.AddModelError("Tasa", "El campo es requerido");
+                }
+                else if (creditoDTO.Tasa.GetType() != typeof(decimal))
+                {
+                    ModelState.AddModelError("Tasa", "El campo debe ser numerico");
+
+                }
+
+
+                if (creditoDTO.Plazo == null)
+                {
+                    ModelState.AddModelError("Plazo", "El campo es requerido");
+                    //ModelState.IsValid = true;
+                }
+                else if (creditoDTO.Plazo.GetType() != typeof(int))
+                {
+                    ModelState.AddModelError("Plazo", "El campo debe ser numerico");
+
+                }
+                else if (creditoDTO.Plazo == 0)
+                {
+                    ModelState.AddModelError("Plazo", "El campo debe ser mayor a 0");
+                }
+                if (ModelState.Count > 0)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                //hacemos el mappin del objeto
+                Credito credito = new Credito
+                {
+                    MontoPrestamo = creditoDTO.MontoPrestamo,
+                    Tasa = creditoDTO.Tasa,
+                    Plazo = creditoDTO.Plazo
+                };
+
                 List<AmortizacionDTO> amotizacionListDTO = _icreditoService.amortizacion(credito.MontoPrestamo, credito.Tasa, credito.Plazo);
                 List<Amortizacion> amotizacionList = new List<Amortizacion>();
                 foreach (AmortizacionDTO amortizacion in amotizacionListDTO)
@@ -72,17 +124,15 @@ namespace TestApi.Controllers
                 await _context.SaveChangesAsync();
 
                 return Ok(amotizacionListDTO);
-            }
-            else
+
+            }catch (Exception ex)
             {
-                //return Request.CreateErrorResponse(HttpStatusCode.BadRequest, ModelState);
-                return UnprocessableEntity( ModelState);
-                //BadRequest
+                return BadRequest(ex);
             }
 
-            
+
         }
 
-      
+
     }
 }

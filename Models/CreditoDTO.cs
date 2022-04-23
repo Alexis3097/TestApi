@@ -1,10 +1,16 @@
-﻿namespace TestApi.Models
+﻿
+
+using System.ComponentModel.DataAnnotations;
+
+namespace TestApi.Models
 {
     public class CreditoDTO
     {
-        public int Id { get; set; }
+        [Required]
         public decimal MontoPrestamo { get; set; }
+        [Required]
         public decimal Tasa { get; set; }
+        [Required]
         public int Plazo { get; set; }
     }
 }
